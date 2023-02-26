@@ -1,14 +1,14 @@
 #include <zombiereloaded>
 
 Handle g_hTimer;
-char sMode[32];
+char sMode[12];
 
 public Plugin myinfo = 
 { 
 	name = "[ZR] ChanceViewer", 
 	author = "Palonez", 
 	description = "Output common chance of infection", 
-	version = "1.0.0.0", 
+	version = "1.0.0.1", 
 	url = "https://github.com/Quake1011" 
 };
 
