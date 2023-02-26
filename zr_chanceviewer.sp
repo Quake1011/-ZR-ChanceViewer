@@ -23,7 +23,7 @@ public void EventRoundStart(Event hEvent, const char[] sEvent, bool bdb)
 	if(!(StrEqual(sMode, "absolute", true) && GetActivePlayers() >= GetConVarInt(FindConVar("zr_infect_mzombie_ratio")))) return;
 	
 	g_hTimer = CreateTimer(1.0, Counter, _, TIMER_REPEAT);
-	CreateTimer(GetConVarFloat(FindConVar("zr_infect_spawntime_max"))+3.0, Delete);	
+	CreateTimer(GetConVarFloat(FindConVar("zr_infect_spawntime_max"))+float(GetConVarInt(FindConVar("mp_freezetime"))), Delete);	
 }
 
 public Action Counter(Handle hTimer)
