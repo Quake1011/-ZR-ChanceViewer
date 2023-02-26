@@ -20,7 +20,7 @@ public void OnPluginStart()
 public void EventRoundStart(Event hEvent, const char[] sEvent, bool bdb)
 {
 	GetConVarString(FindConVar("zr_infect_mzombie_mode"), sMode, sizeof(sMode));
-	if(!(StrEqual(sMode, "absolute", true) && GetActivePlayers() >= GetConVarInt(FindConVar("zr_infect_mzombie_ratio")))) return;
+	if(!(sMode[0] == 'a' && GetActivePlayers() >= GetConVarInt(FindConVar("zr_infect_mzombie_ratio")))) return;
 	
 	g_hTimer = CreateTimer(1.0, Counter, _, TIMER_REPEAT);
 	CreateTimer(GetConVarFloat(FindConVar("zr_infect_spawntime_max"))+float(GetConVarInt(FindConVar("mp_freezetime"))), Delete);	
@@ -33,20 +33,20 @@ public Action Counter(Handle hTimer)
 	
 	GetConVarString(FindConVar("zr_infect_mzombie_mode"), sMode, sizeof(sMode));
 	
-	if(StrEqual(sMode, "absolute", true)) fChance = float(ratio/iActives);
-	else if(StrEqual(sMode, "dynamic", true)) fChance = float(1/ratio);
+	if(sMode[0] == 'a') fChance = float(ratio/iActives);
+	else if(sMode[0] == 'd') fChance = float(1/ratio);
 	
 	SetHudTextParams(0.4, 0.4, 1.0, 255, 255, 255, 255);
-	for(int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i) && !IsFakeClient(i))
+	for(int i = 1; i <= MaxClients; i++) 
+		if(IsClientInGame(i) && !IsFakeClient(i)) 
 			ShowHudText(i, -1, "A chance to become a zombie: %.3f", fChance);
-			
+
 	return Plugin_Continue;
 }
 
 public Action Delete(Handle hTimer)
 {
-	KillTMR(g_hTimer);
+	KillTMR();
 	return Plugin_Continue;
 }
 
@@ -54,7 +54,7 @@ public void ZR_OnClientInfected(int client, int attacker, bool motherinfect, boo
 {
 	if(motherinfect)
 	{
-		KillTMR(g_hTimer);
+		KillTMR();
 		return;
 	}
 }
@@ -62,17 +62,17 @@ public void ZR_OnClientInfected(int client, int attacker, bool motherinfect, boo
 stock int GetActivePlayers()
 {
 	int k = 0;
-	for(int i = 1; i <= MaxClients; i++)
-		if(IsClientInGame(i) && GetClientTeam(i) > 1 && IsPlayerAlive(i)) k++
-		
+	for(int i = 1; i <= MaxClients; i++) 
+		if(IsClientInGame(i) && GetClientTeam(i) > 1 && IsPlayerAlive(i)) k++;
+
 	return k;
 }
 
-stock void KillTMR(Handle xHandle)
+stock void KillTMR()
 {
-	if(xHandle != INVALID_HANDLE)
+	if(g_hTimer)
 	{
-		KillTimer(xHandle);
-		xHandle = null;
+		KillTimer(g_hTimer);
+		g_hTimer = null;
 	}
 }
